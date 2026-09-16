@@ -1,0 +1,1791 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>抽奖活动编辑后台 - 高级配置 Demo</title>
+  <style>
+    :root {
+      --nav: #303850;
+      --nav-deep: #252c42;
+      --teal: #11a8ba;
+      --teal-deep: #078fa0;
+      --line: #e6ebf2;
+      --line-dark: #d5dce7;
+      --text: #303844;
+      --muted: #8a94a6;
+      --soft: #f6f8fb;
+      --table-head: #f1f4f8;
+      --warn-bg: #fff0e9;
+      --warn: #ff6b2c;
+      --danger: #ef3f54;
+      --blue: #3978f2;
+      --green: #18a56f;
+      --shadow: 0 14px 42px rgba(21, 32, 56, .18);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: #eef2f7;
+      font: 12px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      min-width: 1280px;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      height: 44px;
+      background: var(--nav);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-width: 1280px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      min-width: 208px;
+    }
+    .brand-mark {
+      width: 25px;
+      height: 25px;
+      border-radius: 7px;
+      background: #ffe136;
+      display: grid;
+      place-items: center;
+      color: #152038;
+      font-weight: 900;
+    }
+    .circle-btn {
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 50%;
+      color: #fff;
+      background: transparent;
+    }
+    .search {
+      width: 420px;
+      height: 28px;
+      margin-left: auto;
+      border-radius: 18px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .search input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      padding: 0 16px;
+      color: #687386;
+    }
+    .search button {
+      width: 68px;
+      height: 24px;
+      margin-right: 2px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .top-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      white-space: nowrap;
+      color: rgba(255,255,255,.9);
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 140px;
+    }
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 108px 144px 1fr;
+      min-height: calc(100vh - 44px);
+      min-width: 1280px;
+    }
+    .nav {
+      background: var(--nav);
+      color: #dbe1ef;
+      padding-top: 10px;
+    }
+    .nav-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin: 8px 6px 14px;
+      padding: 2px;
+      border-radius: 16px;
+      background: var(--nav-deep);
+    }
+    .nav-toggle span {
+      text-align: center;
+      line-height: 18px;
+      border-radius: 12px;
+    }
+    .nav-toggle .active { background: var(--teal); color: #fff; }
+    .nav-item {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+    .nav-item.active {
+      background: var(--teal);
+      color: #fff;
+      border-radius: 0 18px 18px 0;
+      margin-right: 6px;
+    }
+    .nav-ico {
+      width: 15px;
+      text-align: center;
+      color: inherit;
+    }
+    .subnav {
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 16px 10px 30px 14px;
+      color: #6b7482;
+    }
+    .sub-title {
+      color: #9aa3b3;
+      margin: 10px 0 8px;
+    }
+    .sub-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 10px;
+      margin-bottom: 15px;
+    }
+    .sub-link {
+      line-height: 22px;
+      white-space: nowrap;
+    }
+    .sub-link.active {
+      background: #dff7fa;
+      color: var(--teal);
+      text-align: center;
+    }
+    .main {
+      background: #fff;
+      margin: 8px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .page-title {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--line);
+    }
+    .content {
+      padding: 24px 18px 36px;
+    }
+    .section {
+      margin-bottom: 54px;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 40px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 110px minmax(520px, 1fr);
+      gap: 8px;
+      align-items: start;
+      margin: 14px 0;
+      max-width: 1550px;
+    }
+    .label {
+      text-align: right;
+      color: #444b57;
+      line-height: 30px;
+    }
+    .required { color: #f43f5e; margin-right: 4px; }
+    .field,
+    .short-field {
+      height: 30px;
+      border: 1px solid var(--line-dark);
+      border-radius: 2px;
+      background: #fff;
+      padding: 0 10px;
+      outline: none;
+      color: #4a5361;
+    }
+    .short-field { width: 126px; }
+    .field[disabled],
+    .short-field[disabled],
+    textarea[disabled] {
+      background: #f2f5f9;
+      color: #aab2c0;
+    }
+    textarea {
+      width: 100%;
+      min-height: 216px;
+      border: 1px solid var(--line-dark);
+      resize: vertical;
+      padding: 10px 12px;
+      color: #384252;
+      outline: none;
+    }
+    .hint {
+      margin-top: 5px;
+      color: var(--warn);
+    }
+    .radio-line {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #a6afbd;
+    }
+    .radio {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fake-radio {
+      width: 13px;
+      height: 13px;
+      border: 1px solid #d4dbe7;
+      border-radius: 50%;
+      background: #f5f7fb;
+      display: inline-block;
+      position: relative;
+    }
+    .fake-radio.on::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: #b8c2d4;
+    }
+    .inline-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #333b47;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      height: 30px;
+      min-width: 72px;
+      padding: 0 14px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .btn:hover { background: var(--teal-deep); }
+    .btn.secondary {
+      background: #fff;
+      color: var(--teal);
+      border-color: var(--teal);
+    }
+    .btn.ghost {
+      background: #f6fbfc;
+      color: var(--teal);
+      border-color: #b8e8ef;
+    }
+    .btn.mini {
+      min-width: auto;
+      height: 26px;
+      padding: 0 10px;
+    }
+    .btn.warn {
+      background: #fff8f2;
+      color: var(--warn);
+      border-color: #ffc9ac;
+    }
+    .alert {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-height: 46px;
+      margin: 0 20px 18px;
+      padding: 9px 16px;
+      background: var(--warn-bg);
+      color: var(--warn);
+    }
+    .alert-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--warn);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+    table {
+      width: calc(100% - 40px);
+      margin: 0 20px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      text-align: left;
+      padding: 12px 10px;
+      height: 54px;
+      vertical-align: middle;
+    }
+    th {
+      background: var(--table-head);
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .prob-total {
+      width: calc(100% - 40px);
+      margin: 0 20px;
+      padding-top: 6px;
+      text-align: right;
+      color: var(--warn);
+    }
+    .link {
+      border: 0;
+      background: transparent;
+      color: var(--teal);
+      padding: 0 6px 0 0;
+    }
+    .link.danger { color: var(--danger); }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 7px;
+      border-radius: 10px;
+      background: #ecfdf6;
+      color: var(--green);
+      border: 1px solid #bcebd8;
+      white-space: nowrap;
+    }
+    .tag.gray {
+      background: #f4f6f9;
+      color: #7b8494;
+      border-color: #dfe5ee;
+    }
+    .prize-pic {
+      width: 45px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #ffd166, #ff7a59);
+      color: #fff;
+      font-weight: 800;
+      transform: rotate(-18deg);
+      margin-left: 8px;
+    }
+    .save-area {
+      display: flex;
+      justify-content: center;
+      padding: 34px 0 0;
+    }
+    .drawer-mask,
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 27, 45, .32);
+      z-index: 40;
+      display: none;
+    }
+    .drawer-mask.show,
+    .modal-mask.show {
+      display: block;
+    }
+    .drawer {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(1080px, calc(100vw - 56px));
+      max-height: calc(100vh - 70px);
+      transform: translate(-50%, -50%);
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer-head,
+    .modal-head {
+      min-height: 58px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .drawer-title,
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: #f4f6fa;
+      color: #667085;
+      border-radius: 50%;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .drawer-body {
+      overflow: auto;
+      padding: 20px 24px 24px;
+      flex: 1;
+    }
+    .drawer-foot,
+    .modal-foot {
+      border-top: 1px solid var(--line);
+      padding: 14px 22px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #fbfcfe;
+    }
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: #fbfcff;
+      padding: 10px 12px;
+      min-height: 68px;
+    }
+    .metric-label {
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #162033;
+    }
+    .metric-note {
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .config-panel {
+      border: 1px solid var(--line);
+      margin-top: 16px;
+    }
+    .panel-title {
+      height: 42px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      font-weight: 700;
+    }
+    .panel-body {
+      padding: 16px 14px;
+    }
+    .time-scale {
+      display: grid;
+      grid-template-columns: 180px 1fr 180px;
+      align-items: center;
+      gap: 12px;
+      color: #687386;
+      margin-bottom: 10px;
+    }
+    .scale-mid {
+      display: flex;
+      justify-content: space-between;
+      color: #97a1b2;
+    }
+    .timeline-wrap {
+      position: relative;
+      height: 86px;
+      padding: 21px 8px 0;
+      border: 1px dashed #cbd5e1;
+      background: repeating-linear-gradient(90deg, #fff 0, #fff 59px, #f7f9fc 60px, #f7f9fc 61px);
+      user-select: none;
+    }
+    .timeline {
+      position: relative;
+      height: 14px;
+      border-radius: 7px;
+      background: #dbe4f0;
+      cursor: crosshair;
+    }
+    .timeline-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      border-radius: 7px;
+      background: rgba(17, 168, 186, .72);
+    }
+    .timeline-selecting {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      border-radius: 7px;
+      background: rgba(57, 120, 242, .45);
+      display: none;
+    }
+    .timeline-marker {
+      position: absolute;
+      top: -7px;
+      width: 2px;
+      height: 28px;
+      background: var(--blue);
+      display: none;
+    }
+    .timeline-tip {
+      position: absolute;
+      top: 50px;
+      left: 8px;
+      right: 8px;
+      color: #687386;
+    }
+    .segment-editor {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr) 108px;
+      gap: 10px;
+      align-items: end;
+      margin-top: 16px;
+      padding: 12px;
+      background: #fbfcff;
+      border: 1px solid var(--line);
+    }
+    .field-group label {
+      display: block;
+      color: #697386;
+      margin-bottom: 5px;
+    }
+    .field-group input {
+      width: 100%;
+      height: 30px;
+      border: 1px solid var(--line-dark);
+      padding: 0 8px;
+      outline: none;
+    }
+    .segments-table {
+      margin: 14px 0 0;
+      width: 100%;
+    }
+    .segments-table th,
+    .segments-table td {
+      height: 42px;
+      padding: 8px;
+    }
+    .empty {
+      border: 1px dashed #cbd5e1;
+      padding: 18px;
+      text-align: center;
+      color: #8a94a6;
+      background: #fbfcff;
+      margin-top: 12px;
+    }
+    .result-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .result {
+      padding: 10px 12px;
+      background: #f6fbfc;
+      border: 1px solid #cceff3;
+      color: #234452;
+    }
+    .modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(760px, calc(100vw - 40px));
+      max-height: calc(100vh - 80px);
+      transform: translate(-50%, -50%);
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .modal.prize-modal {
+      width: min(900px, calc(100vw - 48px));
+    }
+    .modal.config-modal {
+      width: min(1080px, calc(100vw - 56px));
+    }
+    .modal-body {
+      padding: 20px 22px;
+      overflow: auto;
+    }
+    .prize-form {
+      padding: 8px 38px 18px;
+    }
+    .prize-form-row {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin: 18px 0;
+    }
+    .prize-form-row .label {
+      line-height: 30px;
+      text-align: right;
+    }
+    .prize-type-line,
+    .stock-type-line {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      color: #3f4856;
+      min-height: 30px;
+    }
+    .prize-type-line .radio,
+    .stock-type-line .radio {
+      color: #4b5565;
+    }
+    .prob-input-wrap {
+      display: grid;
+      grid-template-columns: 1fr 48px;
+    }
+    .prob-input-wrap input {
+      border-right: 0;
+    }
+    .prob-unit {
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: #7b8494;
+      background: #f2f5f9;
+      border: 1px solid var(--line-dark);
+    }
+    .suggest-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--warn);
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .suggest-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 28px;
+      padding: 0 10px;
+      background: #fff8f2;
+      border: 1px solid #ffd8bd;
+      color: #7d4b25;
+    }
+    .suggest-pill strong {
+      color: var(--warn);
+      font-size: 14px;
+    }
+    .name-input-wrap {
+      display: grid;
+      grid-template-columns: 1fr 46px;
+      align-items: center;
+      border: 1px solid var(--line-dark);
+      height: 30px;
+    }
+    .name-input-wrap input {
+      width: 100%;
+      height: 28px;
+      border: 0;
+      padding: 0 10px;
+      outline: none;
+    }
+    .name-count {
+      color: #9aa3b3;
+      text-align: center;
+      border-left: 1px solid var(--line);
+      line-height: 20px;
+    }
+    .date-range-fields {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .date-range-fields input {
+      width: 184px;
+    }
+    .segment-calc-table {
+      width: 100%;
+      margin: 12px 0 0;
+    }
+    .segment-calc-table th,
+    .segment-calc-table td {
+      height: 42px;
+      padding: 8px;
+    }
+    .calc-summary-panel {
+      margin: 0 20px 16px;
+      background: transparent;
+    }
+    .calc-summary-body {
+      padding: 0;
+    }
+    .calc-inline-grid {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .calc-inline-grid .field-group input {
+      background: #fff;
+    }
+    .suggestion-table {
+      width: 100%;
+      margin: 12px 0 0;
+    }
+    .suggestion-table th,
+    .suggestion-table td {
+      height: 40px;
+      padding: 8px;
+    }
+    .default-prob {
+      color: var(--warn);
+      font-weight: 700;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .calc-grid .field-group input,
+    .calc-grid .field-group select {
+      height: 34px;
+      border: 1px solid var(--line-dark);
+      width: 100%;
+      padding: 0 10px;
+      background: #fff;
+      outline: none;
+    }
+    .calc-explain {
+      background: #fff8f2;
+      color: #7d4b25;
+      border: 1px solid #ffd8bd;
+      padding: 10px 12px;
+      margin: 12px 0;
+    }
+    .calc-result {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .calc-number {
+      border: 1px solid var(--line);
+      background: #fbfcff;
+      padding: 12px;
+    }
+    .calc-number strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      color: #152038;
+    }
+    .status-note {
+      color: #697386;
+      margin-top: 10px;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%) translateY(20px);
+      min-width: 220px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      color: #fff;
+      background: rgba(15, 23, 42, .88);
+      opacity: 0;
+      pointer-events: none;
+      transition: .18s ease;
+      z-index: 80;
+      text-align: center;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    @media (max-width: 1100px) {
+      .search { width: 310px; }
+      .drawer { width: calc(100vw - 70px); }
+      .segment-editor { grid-template-columns: 1fr 1fr; }
+      .summary-cards,
+      .result-strip,
+      .calc-result { grid-template-columns: 1fr 1fr; }
+      .prize-form { padding: 8px 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="brand-mark">游</span>游侠客</div>
+    <button class="circle-btn" aria-label="返回">‹</button>
+    <button class="circle-btn" aria-label="菜单">☰</button>
+    <div class="search">
+      <input aria-label="搜索" placeholder="活动名称、订单号、手机号、计划号">
+      <button>搜索</button>
+    </div>
+    <div class="top-actions">
+      <span>常用</span>
+      <span>消息</span>
+      <span>待办</span>
+      <span>待审核</span>
+      <span>Top20</span>
+      <span>游侠学院</span>
+    </div>
+    <div class="user"><span class="avatar"></span><span>又丸/刘晟</span></div>
+  </div>
+
+  <div class="layout">
+    <aside class="nav">
+      <div class="nav-toggle"><span class="active">商家</span><span>平台</span></div>
+      <div class="nav-item"><span class="nav-ico">⌁</span>控制台</div>
+      <div class="nav-item"><span class="nav-ico">◉</span>产品系统</div>
+      <div class="nav-item"><span class="nav-ico">▣</span>订单系统</div>
+      <div class="nav-item"><span class="nav-ico">◷</span>交易管理</div>
+      <div class="nav-item"><span class="nav-ico">▤</span>保险管理</div>
+      <div class="nav-item"><span class="nav-ico">⚙</span>计划资源</div>
+      <div class="nav-item"><span class="nav-ico">▱</span>房券线路</div>
+      <div class="nav-item"><span class="nav-ico">⚑</span>定制系统</div>
+      <div class="nav-item"><span class="nav-ico">▧</span>签证系统</div>
+      <div class="nav-item active"><span class="nav-ico">♟</span>营销管理</div>
+      <div class="nav-item"><span class="nav-ico">▥</span>数据分析</div>
+      <div class="nav-item"><span class="nav-ico">◎</span>推广管理</div>
+      <div class="nav-item"><span class="nav-ico">♙</span>用户管理</div>
+      <div class="nav-item"><span class="nav-ico">▯</span>内容运营</div>
+      <div class="nav-item"><span class="nav-ico">⚙</span>移动端</div>
+      <div class="nav-item"><span class="nav-ico">▱</span>PC端</div>
+    </aside>
+
+    <aside class="subnav">
+      <div class="sub-title">优惠券管理</div>
+      <div class="sub-link">优惠券</div>
+      <div class="sub-title">券包管理</div>
+      <div class="sub-grid">
+        <div class="sub-link">券包产品</div><div class="sub-link">券包订单</div>
+        <div class="sub-link">券包退款</div><div class="sub-link">券包结算</div>
+        <div class="sub-link">调整费用</div><div class="sub-link">券包全局</div>
+      </div>
+      <div class="sub-title">营销中心</div>
+      <div class="sub-grid"><div class="sub-link">裂变券</div><div class="sub-link">特惠立减</div></div>
+      <div class="sub-title">营销会场</div>
+      <div class="sub-grid"><div class="sub-link">营销主题</div><div class="sub-link">红包封面</div></div>
+      <div class="sub-title">H5管理</div>
+      <div class="sub-grid">
+        <div class="sub-link">H5列表</div><div class="sub-link">导航组件</div>
+        <div class="sub-link">定位组件</div><div class="sub-link">回收站</div>
+        <div class="sub-link">答题管理</div><div class="sub-link">答题海报</div>
+        <div class="sub-link active">抽奖管理</div><div class="sub-link">证书管理</div>
+      </div>
+      <div class="sub-title">推荐设置</div>
+      <div class="sub-link">推荐产品</div>
+      <div class="sub-title">开宝箱</div>
+      <div class="sub-grid"><div class="sub-link">宝箱活动</div><div class="sub-link">宝箱参与</div></div>
+    </aside>
+
+    <main class="main">
+      <div class="page-title">编辑奖品</div>
+      <div class="content">
+        <section class="section">
+          <div class="section-head">
+            <div class="section-title">基础信息</div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>抽奖方式</div>
+            <div class="radio-line">
+              <span class="radio"><span class="fake-radio on"></span>大转盘</span>
+              <span class="radio"><span class="fake-radio"></span>九宫格</span>
+              <span class="radio"><span class="fake-radio"></span>老虎机</span>
+              <span class="radio"><span class="fake-radio"></span>刮刮乐</span>
+              <span class="radio"><span class="fake-radio"></span>摇一摇</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label"></div>
+            <div class="hint">「大转盘」，奖项需配置为2的倍数</div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>抽奖名称</div>
+            <div>
+              <input class="field" style="width:100%" value="天天抽奖攒好运">
+              <div class="hint">抽奖名称同时显示为页面导航的标题，最多可输入14个字</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>活动日期</div>
+            <div>
+              <div class="date-range-fields">
+                <input class="field" id="activityStartInput" value="2024-10-10 12:00:00">
+                <span>至</span>
+                <input class="field" id="activityEndInput" value="2028-10-31 00:00:00">
+              </div>
+              <div class="hint">可直接输入精确到秒的活动开始和结束时间，格式：YYYY-MM-DD HH:mm:ss</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>活动规则</div>
+            <textarea>一、活动规则
+1.活动期间，每位游侠每天可获得一次免费抽奖机会，第二次抽奖需消耗50侠气，第三次抽奖需消耗100侠气
+
+二、活动奖品
+1.实物大奖：定制速干手巾（1个）、菲尼斯头灯（1个）
+2.8侠气、38侠气、88侠气、888侠气、5元线路优惠券（无门槛）、10元线路优惠券（无门槛）
+
+三、奖品领取流程
+1.侠气类奖品：获得侠气类奖品时，所获侠气值会自动累计到用户账户侠气中
+2.券类奖品：获得券类奖品时，优惠券会自动发放至用户账户中</textarea>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>活动类型</div>
+            <div class="radio-line">
+              <span class="radio"><span class="fake-radio"></span>通用</span>
+              <span class="radio"><span class="fake-radio"></span>一元抽奖</span>
+              <span class="radio"><span class="fake-radio on"></span>平台抽奖</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div class="section-title">抽奖限制</div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>用户限制</div>
+            <div class="radio-line">
+              <span class="radio"><span class="fake-radio"></span>全部用户</span>
+              <span class="radio"><span class="fake-radio"></span>仅限新用户</span>
+              <span class="radio"><span class="fake-radio on"></span>指定用户</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>抽奖次数限制</div>
+            <div class="inline-field">
+              <input class="field" style="width:170px" disabled value="整个活动">
+              <span>每人最多有</span>
+              <input id="maxDrawsInput" class="short-field" value="1" inputmode="numeric">
+              <span>次</span>
+            </div>
+            <div></div>
+            <div class="hint">若用于“H5任务抽奖”需配置为“整个活动每人最多有0次”</div>
+          </div>
+          <div class="form-row">
+            <div class="label"><span class="required">*</span>每个用户中奖次数</div>
+            <div class="inline-field">
+              <span class="radio"><span class="fake-radio"></span>无限制</span>
+              <span class="radio"><span class="fake-radio on"></span>每人最多</span>
+              <input class="short-field" disabled value="1">
+              <span>次</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" style="margin-bottom: 0;">
+          <div class="section-head">
+            <div class="section-title">奖品配置</div>
+            <div class="toolbar">
+              <button class="btn" id="openPrizeModal">新增奖品</button>
+            </div>
+          </div>
+
+          <div class="calc-summary-panel">
+            <div class="calc-summary-body">
+              <div class="calc-inline-grid">
+                <div class="field-group">
+                  <label>预计参与人数</label>
+                  <input id="expectedPeople" value="20000" inputmode="numeric">
+                </div>
+                <div class="status-note" style="margin-bottom:6px;">输入预期参与人数，编辑奖品时系统会推荐合适的概率（不限量奖品除外）</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert">
+            <span class="alert-dot">!</span>
+            <div>
+              当前抽奖玩法为「刮刮卡」，奖项需配置为1个及以上<br>
+              至少存在一个「不限制」奖品或一个「谢谢参与」奖品作为保底奖品（当奖品库存不足时，将派奖保底奖品给用户）
+            </div>
+          </div>
+
+          <table>
+            <colgroup>
+              <col style="width:72px">
+              <col style="width:90px">
+              <col style="width:180px">
+              <col style="width:90px">
+              <col style="width:150px">
+              <col style="width:180px">
+              <col style="width:180px">
+              <col style="width:126px">
+              <col style="width:180px">
+              <col style="width:108px">
+              <col style="width:190px">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>位置</th>
+                <th>奖品ID</th>
+                <th>奖品名称</th>
+                <th>奖品价值</th>
+                <th>奖品类型</th>
+                <th>剩余份数</th>
+                <th>已发放</th>
+                <th>奖品图片</th>
+                <th>中奖率</th>
+                <th>保底奖品</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="prizeRows"></tbody>
+          </table>
+          <div class="prob-total">当前奖品中奖率总计：<span id="probTotal">100.00</span> %</div>
+
+          <div class="save-area">
+            <button class="btn" id="savePage">保存</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="drawer-mask" id="configMask">
+    <aside class="drawer config-modal" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="drawer-head">
+        <div>
+          <div class="drawer-title" id="drawerTitle">高级配置</div>
+          <div class="status-note" id="drawerSubTitle">按活动时间分段配置释放库存与概率</div>
+        </div>
+        <button class="close" id="closeConfig" aria-label="关闭">×</button>
+      </div>
+      <div class="drawer-body">
+        <div class="summary-cards">
+          <div class="metric">
+            <div class="metric-label">活动总时间</div>
+            <div class="metric-value" id="metricDuration">1474 天</div>
+            <div class="metric-note" id="metricDateRange">2024-10-10 12:00:00 至 2028-10-31 00:00:00</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">当前奖品库存</div>
+            <div class="metric-value" id="metricStock">5</div>
+            <div class="metric-note">动态分段可限制释放份数</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">默认中奖率</div>
+            <div class="metric-value" id="metricProb">8%</div>
+            <div class="metric-note">未命中分段时使用默认值</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">已配置分段</div>
+            <div class="metric-value" id="metricSegments">0 段</div>
+            <div class="metric-note">可拖拽时间轴快速新增</div>
+          </div>
+        </div>
+
+        <div class="config-panel">
+          <div class="panel-title">
+            <span>动态释放时间轴</span>
+            <button class="btn mini secondary" id="clearSegments">清空分段</button>
+          </div>
+          <div class="panel-body">
+            <div class="time-scale">
+              <span id="timelineStartLabel">2024-10-10 12:00:00</span>
+              <div class="scale-mid"><span>25%</span><span>50%</span><span>75%</span></div>
+              <span id="timelineEndLabel" style="text-align:right">2028-10-31 00:00:00</span>
+            </div>
+            <div class="timeline-wrap">
+              <div class="timeline" id="timeline">
+                <div id="timelineFills"></div>
+                <div class="timeline-selecting" id="timelineSelecting"></div>
+                <div class="timeline-marker" id="timelineMarker"></div>
+              </div>
+              <div class="timeline-tip" id="timelineTip">在横条上按住并拖拽，松开后自动生成一段配置；下方可精确调整到秒。</div>
+            </div>
+            <div class="segment-editor">
+              <div class="field-group">
+                <label>开始时间</label>
+                <input id="segStart" value="2024-10-10 12:00:00">
+              </div>
+              <div class="field-group">
+                <label>结束时间</label>
+                <input id="segEnd" value="2024-10-17 12:00:00">
+              </div>
+              <div class="field-group">
+                <label>释放库存</label>
+                <input id="segStock" value="1" inputmode="numeric">
+              </div>
+              <div class="field-group">
+                <label>中奖率 %</label>
+                <input id="segProb" value="0.50" inputmode="decimal">
+              </div>
+              <div class="field-group">
+                <label>备注</label>
+                <input id="segNote" value="首周释放">
+              </div>
+              <button class="btn" id="addSegment">新增分段</button>
+            </div>
+            <div id="segmentsContainer"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="drawer-foot">
+        <button class="btn secondary" id="cancelConfig">取消</button>
+        <button class="btn" id="saveConfig">保存高级配置</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-mask" id="prizeMask">
+    <section class="modal prize-modal" role="dialog" aria-modal="true" aria-labelledby="prizeModalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="prizeModalTitle">新增奖品</div>
+        <button class="close" id="closePrizeModal" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="prize-form">
+          <div class="prize-form-row">
+            <div class="label"><span class="required">*</span>奖品类型</div>
+            <div>
+              <div class="prize-type-line" id="prizeTypeLine">
+                <span class="radio" data-prize-type="奖品"><span class="fake-radio on"></span>奖品</span>
+                <span class="radio" data-prize-type="侠气"><span class="fake-radio"></span>侠气</span>
+                <span class="radio" data-prize-type="优惠券"><span class="fake-radio"></span>优惠券</span>
+                <span class="radio" data-prize-type="商城券"><span class="fake-radio"></span>商城券</span>
+                <span class="radio" data-prize-type="谢谢参与"><span class="fake-radio"></span>谢谢参与</span>
+                <span class="radio" data-prize-type="红包封面"><span class="fake-radio"></span>红包封面</span>
+              </div>
+              <div class="hint">注意：需在活动规则详细告知用户奖品领取方式</div>
+            </div>
+          </div>
+          <div class="prize-form-row">
+            <div class="label"><span class="required">*</span>奖品名称</div>
+            <div>
+              <div class="name-input-wrap">
+                <input id="prizeNameInput" placeholder="请输入奖品名称" maxlength="6">
+                <span class="name-count"><span id="prizeNameCount">0</span>/6</span>
+              </div>
+            </div>
+          </div>
+          <div class="prize-form-row">
+            <div class="label"><span class="required">*</span>奖品份数</div>
+            <div class="stock-type-line">
+              <span class="radio" data-stock-mode="unlimited"><span class="fake-radio on"></span>不限量</span>
+              <span class="radio" data-stock-mode="limited"><span class="fake-radio"></span>限量</span>
+              <input class="short-field" id="prizeStockInput" value="5" inputmode="numeric" style="display:none;">
+            </div>
+          </div>
+          <div class="prize-form-row">
+            <div class="label"><span class="required">*</span>中奖概率</div>
+            <div>
+              <div class="prob-input-wrap">
+                <input class="field" id="prizeProbabilityInput" value="0" inputmode="decimal">
+                <span class="prob-unit">%</span>
+              </div>
+              <div class="suggest-line">
+                <span>剩余可配概率 <span id="remainingProbability">0.00%</span></span>
+                <span class="suggest-pill">系统建议默认概率 <strong id="prizeSuggestProb">0.03%</strong></span>
+                <button class="link" id="usePrizeSuggest" type="button">采用建议</button>
+              </div>
+              <div class="status-note" id="prizeSuggestHelp">按奖品限量份数 ÷ 预计总抽奖次数计算。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn secondary" id="confirmPrizeModal">确定</button>
+        <button class="btn secondary" id="cancelPrizeModal" style="color:#667085;border-color:#d1d5db;">取消</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">已保存</div>
+
+  <script>
+    let activityStart = new Date('2024-10-10T12:00:00').getTime();
+    let activityEnd = new Date('2028-10-31T00:00:00').getTime();
+    const minProbability = 0.01;
+
+    const prizes = [
+      {
+        id: 3072,
+        position: 1,
+        name: '狗狗免座券',
+        value: 0,
+        type: '优惠券',
+        stock: 5,
+        sent: 0,
+        probability: 8,
+        guarantee: false,
+        unlimited: false,
+        segments: [
+          {
+            start: '2024-10-10 12:00:00',
+            end: '2024-10-17 12:00:00',
+            stock: 1,
+            probability: 0.5,
+            note: '首周释放'
+          }
+        ]
+      },
+      {
+        id: 3073,
+        position: 2,
+        name: '谢谢参与',
+        value: 0,
+        type: '谢谢参与',
+        stock: '不限制',
+        sent: 0,
+        probability: 92,
+        guarantee: true,
+        unlimited: true,
+        segments: []
+      }
+    ];
+
+    let currentPrizeIndex = 0;
+    let editingPrizeIndex = null;
+    let selectedPrizeType = '奖品';
+    let selectedStockMode = 'unlimited';
+    let dragStartPercent = null;
+    let selecting = false;
+
+    const $ = (id) => document.getElementById(id);
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('zh-CN');
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function formatDateTime(ms) {
+      const d = new Date(ms);
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function parseDateTime(value) {
+      const normalized = String(value).trim().replace(' ', 'T');
+      const time = new Date(normalized).getTime();
+      return Number.isFinite(time) ? time : null;
+    }
+
+    function getActivityDurationMs() {
+      return Math.max(1, activityEnd - activityStart);
+    }
+
+    function formatDuration(ms) {
+      const minutes = Math.max(1, Math.floor(ms / 60000));
+      const hours = Math.floor(ms / 3600000);
+      const days = Math.floor(ms / 86400000);
+      if (days >= 1) return `${days} 天`;
+      if (hours >= 1) return `${hours} 小时`;
+      return `${minutes} 分钟`;
+    }
+
+    function updateActivityRangeFromInputs(silent = false) {
+      const start = parseDateTime($('activityStartInput').value);
+      const end = parseDateTime($('activityEndInput').value);
+      if (start === null || end === null || start >= end) {
+        if (!silent) showToast('请填写有效的活动开始和结束时间');
+        return false;
+      }
+      activityStart = start;
+      activityEnd = end;
+      updateActivityRangeView();
+      renderSegments();
+      syncExpectedDraws();
+      return true;
+    }
+
+    function updateActivityRangeView() {
+      const startText = formatDateTime(activityStart);
+      const endText = formatDateTime(activityEnd);
+      $('activityStartInput').value = startText;
+      $('activityEndInput').value = endText;
+      $('metricDuration').textContent = formatDuration(getActivityDurationMs());
+      $('metricDateRange').textContent = `${startText} 至 ${endText}`;
+      $('timelineStartLabel').textContent = startText;
+      $('timelineEndLabel').textContent = endText;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function msToPercent(ms) {
+      return clamp(((ms - activityStart) / getActivityDurationMs()) * 100, 0, 100);
+    }
+
+    function percentToMs(percent) {
+      return activityStart + getActivityDurationMs() * (percent / 100);
+    }
+
+    function fmtProbability(value) {
+      return `${Number(value).toFixed(2).replace(/\.00$/, '')}%`;
+    }
+
+    function getExpectedPeople() {
+      return Math.max(0, Number($('expectedPeople').value) || 0);
+    }
+
+    function getMaxDraws() {
+      return Math.max(0, Number($('maxDrawsInput').value) || 0);
+    }
+
+    function getTotalExpectedDraws() {
+      return getExpectedPeople() * getMaxDraws();
+    }
+
+    function getDefaultProbabilityByStock(stockValue) {
+      const stock = Number(stockValue);
+      const totalDraws = getTotalExpectedDraws();
+      if (!Number.isFinite(stock) || stock <= 0 || totalDraws <= 0) {
+        return { raw: 0, suggested: null };
+      }
+      const raw = (stock / totalDraws) * 100;
+      const suggested = raw > 0 && raw < minProbability ? minProbability : raw;
+      return { raw, suggested };
+    }
+
+    function formatSuggestedForPrize(prize) {
+      if (prize.unlimited || prize.stock === '不限制') return '-';
+      const data = getDefaultProbabilityByStock(prize.stock);
+      return data.suggested === null ? '-' : `${data.suggested.toFixed(2)}%`;
+    }
+
+    function syncExpectedDraws() {
+      if ($('calcTotalDraws')) {
+        $('calcTotalDraws').textContent = `${formatNumber(getTotalExpectedDraws())} 次`;
+      }
+    }
+
+    function showToast(message) {
+      const toast = $('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 1700);
+    }
+
+    function renderPrizeRows() {
+      const tbody = $('prizeRows');
+      tbody.innerHTML = prizes.map((prize, index) => `
+        <tr>
+          <td>${prize.position}</td>
+          <td>${prize.id}</td>
+          <td>${prize.name}</td>
+          <td>${prize.value}</td>
+          <td>${prize.type}</td>
+          <td>${prize.stock}</td>
+          <td>${prize.sent}</td>
+          <td><div class="prize-pic">${index === 0 ? '%' : '奖'}</div></td>
+          <td>
+            ${fmtProbability(prize.probability)}
+            ${prize.segments.length ? `<span class="tag" title="已配置动态分段">${prize.segments.length}段动态</span>` : ''}
+          </td>
+          <td>${prize.guarantee ? '<span style="color:#f43f5e">已是保底</span>' : '-'}</td>
+          <td>
+            <button class="link" data-edit="${index}">编辑</button>
+            <button class="link" data-config="${index}">高级配置</button>
+            <button class="link danger">删除</button>
+          </td>
+        </tr>
+      `).join('');
+      $('probTotal').textContent = prizes.reduce((sum, prize) => sum + Number(prize.probability), 0).toFixed(2);
+      tbody.querySelectorAll('[data-config]').forEach((button) => {
+        button.addEventListener('click', () => openConfig(Number(button.dataset.config)));
+      });
+      tbody.querySelectorAll('[data-edit]').forEach((button) => {
+        button.addEventListener('click', () => openPrizeModal(Number(button.dataset.edit)));
+      });
+      syncExpectedDraws();
+    }
+
+    function openConfig(index) {
+      currentPrizeIndex = index;
+      const prize = prizes[currentPrizeIndex];
+      $('drawerTitle').textContent = `高级配置（${prize.name}）`;
+      $('drawerSubTitle').textContent = `${prize.name}（奖品ID ${prize.id}），按活动总时间配置分段释放库存和中奖概率`;
+      $('metricStock').textContent = prize.stock;
+      $('metricProb').textContent = fmtProbability(prize.probability);
+      updateActivityRangeView();
+      $('configMask').classList.add('show');
+      renderSegments();
+      syncExpectedDraws();
+    }
+
+    function closeConfig() {
+      $('configMask').classList.remove('show');
+    }
+
+    function renderSegments() {
+      const prize = prizes[currentPrizeIndex];
+      $('metricSegments').textContent = `${prize.segments.length} 段`;
+      const fills = $('timelineFills');
+      fills.innerHTML = prize.segments.map((seg) => {
+        const start = parseDateTime(seg.start);
+        const end = parseDateTime(seg.end);
+        if (start === null || end === null) return '';
+        const left = msToPercent(Math.min(start, end));
+        const width = Math.max(0.4, Math.abs(msToPercent(end) - msToPercent(start)));
+        return `<div class="timeline-fill" style="left:${left}%;width:${width}%;" title="${seg.start} 至 ${seg.end}"></div>`;
+      }).join('');
+
+      const container = $('segmentsContainer');
+      if (!prize.segments.length) {
+        container.innerHTML = '<div class="empty">暂无分段配置。可直接在时间轴上拖拽新增一段。</div>';
+        return;
+      }
+      container.innerHTML = `
+        <table class="segments-table">
+          <thead>
+            <tr>
+              <th style="width:56px">序号</th>
+              <th>开始时间</th>
+              <th>结束时间</th>
+              <th style="width:100px">释放库存</th>
+              <th style="width:100px">中奖率</th>
+              <th>备注</th>
+              <th style="width:118px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${prize.segments.map((seg, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${seg.start}</td>
+                <td>${seg.end}</td>
+                <td>${seg.stock}</td>
+                <td>${fmtProbability(seg.probability)}</td>
+                <td>${seg.note || '-'}</td>
+                <td>
+                  <button class="link" data-load-seg="${index}">编辑</button>
+                  <button class="link danger" data-del-seg="${index}">删除</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      container.querySelectorAll('[data-load-seg]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const seg = prize.segments[Number(button.dataset.loadSeg)];
+          $('segStart').value = seg.start;
+          $('segEnd').value = seg.end;
+          $('segStock').value = seg.stock;
+          $('segProb').value = Number(seg.probability).toFixed(2);
+          $('segNote').value = seg.note || '';
+          showToast('已进入分段编辑，可继续微调');
+        });
+      });
+      container.querySelectorAll('[data-del-seg]').forEach((button) => {
+        button.addEventListener('click', () => {
+          prize.segments.splice(Number(button.dataset.delSeg), 1);
+          renderSegments();
+          renderPrizeRows();
+          showToast('已删除分段');
+        });
+      });
+    }
+
+    function addSegmentFromFields() {
+      const start = parseDateTime($('segStart').value);
+      const end = parseDateTime($('segEnd').value);
+      const stock = Number($('segStock').value);
+      const probability = Number($('segProb').value);
+      if (start === null || end === null || start >= end) {
+        showToast('请填写有效的开始和结束时间');
+        return;
+      }
+      if (start < activityStart || end > activityEnd) {
+        showToast('分段时间需在活动日期内');
+        return;
+      }
+      if (!Number.isFinite(stock) || stock < 0) {
+        showToast('释放库存需为非负数字');
+        return;
+      }
+      if (!Number.isFinite(probability) || probability < minProbability) {
+        showToast('中奖率最小为 0.01%');
+        return;
+      }
+      prizes[currentPrizeIndex].segments.push({
+        start: formatDateTime(start),
+        end: formatDateTime(end),
+        stock,
+        probability,
+        note: $('segNote').value.trim()
+      });
+      prizes[currentPrizeIndex].segments.sort((a, b) => parseDateTime(a.start) - parseDateTime(b.start));
+      renderSegments();
+      renderPrizeRows();
+      showToast('已新增分段配置');
+    }
+
+    function timelinePercentFromEvent(event) {
+      const rect = $('timeline').getBoundingClientRect();
+      return clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100);
+    }
+
+    function updateTimelineSelection(startPercent, endPercent) {
+      const left = Math.min(startPercent, endPercent);
+      const width = Math.abs(endPercent - startPercent);
+      const select = $('timelineSelecting');
+      select.style.display = 'block';
+      select.style.left = `${left}%`;
+      select.style.width = `${Math.max(width, .35)}%`;
+      $('timelineMarker').style.display = 'block';
+      $('timelineMarker').style.left = `${endPercent}%`;
+      $('timelineTip').textContent = `${formatDateTime(percentToMs(left))} 至 ${formatDateTime(percentToMs(left + width))}`;
+    }
+
+    function finishTimelineSelection(endPercent) {
+      const left = Math.min(dragStartPercent, endPercent);
+      const right = Math.max(dragStartPercent, endPercent);
+      $('timelineSelecting').style.display = 'none';
+      $('timelineMarker').style.display = 'none';
+      if (right - left < 0.5) {
+        $('timelineTip').textContent = '拖拽距离太短，请重新框选一段时间。';
+        return;
+      }
+      $('segStart').value = formatDateTime(percentToMs(left));
+      $('segEnd').value = formatDateTime(percentToMs(right));
+      $('timelineTip').textContent = '已生成一段时间范围，可在下方调整释放库存、中奖率和精确时间。';
+    }
+
+    function getProbabilitySuggestionFor(stockValue) {
+      return getDefaultProbabilityByStock(stockValue);
+    }
+
+    function setRadioState(containerId, attr, value) {
+      document.querySelectorAll(`#${containerId} [${attr}]`).forEach((item) => {
+        item.querySelector('.fake-radio').classList.toggle('on', item.getAttribute(attr) === value);
+      });
+    }
+
+    function updatePrizeSuggestion() {
+      const stock = selectedStockMode === 'limited' ? $('prizeStockInput').value : null;
+      const data = getProbabilitySuggestionFor(stock);
+      const remaining = Math.max(0, 100 - prizes.reduce((sum, prize, index) => {
+        if (index === editingPrizeIndex) return sum;
+        return sum + Number(prize.probability || 0);
+      }, 0));
+      $('prizeSuggestProb').textContent = data.suggested === null ? '-' : `${data.suggested.toFixed(2)}%`;
+      $('remainingProbability').textContent = `${remaining.toFixed(2)}%`;
+      $('prizeSuggestHelp').textContent = data.suggested === null
+        ? '不限量奖品没有库存基准，无法反推概率；如需系统推荐，请选择“限量”并填写奖品份数。'
+        : `按 ${Number(stock)} 份 ÷ ${formatNumber(getTotalExpectedDraws())} 次计算，最低按 0.01% 展示。`;
+    }
+
+    function openPrizeModal(index = null) {
+      editingPrizeIndex = index;
+      const isEditing = index !== null;
+      const prize = isEditing ? prizes[index] : {
+        name: '',
+        type: '奖品',
+        stock: '不限制',
+        probability: 0,
+        unlimited: true
+      };
+      selectedPrizeType = prize.type || '奖品';
+      selectedStockMode = prize.unlimited || prize.stock === '不限制' ? 'unlimited' : 'limited';
+      $('prizeModalTitle').textContent = isEditing ? '编辑奖品' : '新增奖品';
+      $('prizeNameInput').value = prize.name || '';
+      $('prizeNameCount').textContent = String(($('prizeNameInput').value || '').length);
+      $('prizeProbabilityInput').value = Number(prize.probability || 0).toString();
+      $('prizeStockInput').value = Number(prize.stock) || 5;
+      $('prizeStockInput').style.display = selectedStockMode === 'limited' ? 'inline-block' : 'none';
+      setRadioState('prizeTypeLine', 'data-prize-type', selectedPrizeType);
+      setRadioState('prizeMask', 'data-stock-mode', selectedStockMode);
+      updatePrizeSuggestion();
+      $('prizeMask').classList.add('show');
+    }
+
+    function closePrizeModal() {
+      $('prizeMask').classList.remove('show');
+    }
+
+    function savePrizeModal() {
+      const name = $('prizeNameInput').value.trim();
+      const probability = Number($('prizeProbabilityInput').value);
+      if (!name) {
+        showToast('请输入奖品名称');
+        return;
+      }
+      if (!Number.isFinite(probability) || probability < 0) {
+        showToast('请填写有效中奖概率');
+        return;
+      }
+      const isLimited = selectedStockMode === 'limited';
+      const stock = isLimited ? Math.max(0, Number($('prizeStockInput').value) || 0) : '不限制';
+      if (editingPrizeIndex === null) {
+        prizes.push({
+          id: 3070 + prizes.length + 1,
+          position: prizes.length + 1,
+          name,
+          value: 0,
+          type: selectedPrizeType,
+          stock,
+          sent: 0,
+          probability,
+          guarantee: selectedPrizeType === '谢谢参与',
+          unlimited: !isLimited,
+          segments: []
+        });
+      } else {
+        const prize = prizes[editingPrizeIndex];
+        prize.name = name;
+        prize.type = selectedPrizeType;
+        prize.stock = stock;
+        prize.probability = probability;
+        prize.guarantee = selectedPrizeType === '谢谢参与';
+        prize.unlimited = !isLimited;
+      }
+      closePrizeModal();
+      renderPrizeRows();
+      syncExpectedDraws();
+      showToast(editingPrizeIndex === null ? '已新增奖品' : '已更新奖品');
+    }
+
+    function bindEvents() {
+      $('openPrizeModal').addEventListener('click', () => openPrizeModal(null));
+      $('closePrizeModal').addEventListener('click', closePrizeModal);
+      $('cancelPrizeModal').addEventListener('click', closePrizeModal);
+      $('confirmPrizeModal').addEventListener('click', savePrizeModal);
+      $('closeConfig').addEventListener('click', closeConfig);
+      $('cancelConfig').addEventListener('click', closeConfig);
+      $('saveConfig').addEventListener('click', () => {
+        closeConfig();
+        renderPrizeRows();
+        showToast('高级配置已保存');
+      });
+      $('savePage').addEventListener('click', () => showToast('活动配置已保存'));
+      $('addSegment').addEventListener('click', addSegmentFromFields);
+      $('clearSegments').addEventListener('click', () => {
+        prizes[currentPrizeIndex].segments = [];
+        renderSegments();
+        renderPrizeRows();
+        showToast('已清空动态分段');
+      });
+      ['expectedPeople'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          syncExpectedDraws();
+          updatePrizeSuggestion();
+        });
+      });
+      $('maxDrawsInput').addEventListener('input', () => {
+        syncExpectedDraws();
+        updatePrizeSuggestion();
+      });
+      ['activityStartInput', 'activityEndInput'].forEach((id) => {
+        $(id).addEventListener('change', () => updateActivityRangeFromInputs());
+        $(id).addEventListener('blur', () => updateActivityRangeFromInputs(true));
+      });
+      $('prizeNameInput').addEventListener('input', () => {
+        $('prizeNameCount').textContent = String($('prizeNameInput').value.length);
+      });
+      $('prizeStockInput').addEventListener('input', updatePrizeSuggestion);
+      $('usePrizeSuggest').addEventListener('click', () => {
+        const suggested = $('prizeSuggestProb').textContent.replace('%', '');
+        if (suggested === '-') {
+          showToast('当前奖品份数为不限量，暂无建议概率');
+          return;
+        }
+        $('prizeProbabilityInput').value = suggested;
+        showToast('已采用系统建议默认概率');
+      });
+      document.querySelectorAll('[data-prize-type]').forEach((item) => {
+        item.addEventListener('click', () => {
+          selectedPrizeType = item.dataset.prizeType;
+          setRadioState('prizeTypeLine', 'data-prize-type', selectedPrizeType);
+        });
+      });
+      document.querySelectorAll('[data-stock-mode]').forEach((item) => {
+        item.addEventListener('click', () => {
+          selectedStockMode = item.dataset.stockMode;
+          $('prizeStockInput').style.display = selectedStockMode === 'limited' ? 'inline-block' : 'none';
+          setRadioState('prizeMask', 'data-stock-mode', selectedStockMode);
+          updatePrizeSuggestion();
+        });
+      });
+      $('configMask').addEventListener('click', (event) => {
+        if (event.target === $('configMask')) closeConfig();
+      });
+      $('prizeMask').addEventListener('click', (event) => {
+        if (event.target === $('prizeMask')) closePrizeModal();
+      });
+
+      const timeline = $('timeline');
+      timeline.addEventListener('mousedown', (event) => {
+        selecting = true;
+        dragStartPercent = timelinePercentFromEvent(event);
+        updateTimelineSelection(dragStartPercent, dragStartPercent);
+      });
+      window.addEventListener('mousemove', (event) => {
+        if (!selecting) return;
+        updateTimelineSelection(dragStartPercent, timelinePercentFromEvent(event));
+      });
+      window.addEventListener('mouseup', (event) => {
+        if (!selecting) return;
+        selecting = false;
+        finishTimelineSelection(timelinePercentFromEvent(event));
+      });
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeConfig();
+          closePrizeModal();
+        }
+      });
+    }
+
+    renderPrizeRows();
+    bindEvents();
+    updateActivityRangeView();
+    syncExpectedDraws();
+  </script>
+</body>
+</html>
